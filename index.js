@@ -1,21 +1,21 @@
 const fs = require('fs-extra');
 const parse = require('csv-parse');
 const async = require('async');
+const ejs = require('ejs');
+const opn = require('opn');
 
-const inputFile='n26-csv-transactions_280619.csv';
+const inputFile = 'n26.csv';
 
-const lines = []
+const lines = [];
 
-const doSomething = (line) => {
+const processLine = (line) => {
     lines.push(line);
     return Promise.resolve();
-}
+};
 
 const parser = parse({delimiter: ','}, (err, data) => {
     async.eachSeries(data, (line, callback) => {
-        // do something with the line
-        doSomething(line).then(() => {
-            // when processing finishes invoke the callback to move to the next one
+        processLine(line).then(() => {
             callback();
         });
     }, () => {
@@ -23,14 +23,14 @@ const parser = parse({delimiter: ','}, (err, data) => {
             .filter(line => !line[1].includes('Main Account'))
             .filter(line => line[0] !== 'Date')
             .reduce((acc, line) => {
-                const month = line[0].substring(0,10);
+                const date = line[0].substring(0, 10);
                 const amount = +line[6];
-                if (acc.some(m => m.name === month)) {
-                    mo = acc.find(m => m.name === month);
+                if (acc.some(m => m.name === date)) {
+                    const mo = acc.find(m => m.name === date);
                     mo.sum += amount
                 } else {
                     acc.push({
-                        name: month,
+                        name: date,
                         sum: amount
                     })
                 }
@@ -44,23 +44,29 @@ const parser = parse({delimiter: ','}, (err, data) => {
             } else {
                 acc.push({
                     ...mo,
-                    sum: acc[idx-1].sum + mo.sum
+                    sum: acc[idx - 1].sum + mo.sum
                 });
             }
             return acc;
 
         }, []);
 
-        // console.log(months);
-        // console.log(monthsAbs);
-
         const dates = monthsAbs.map(l => l.name);
-        const sums = monthsAbs.map(l => l.sum)
+        const sums = monthsAbs.map(l => l.sum);
 
         fs.outputJsonSync('./out/dates.json', dates);
         fs.outputJsonSync('./out/sums.json', sums);
 
-        console.log('sum', sum);
+        console.log('This should be the current amount on your account: ', sum);
+
+        ejs.renderFile('./templates/index.html.dist', {dates, sums}, null, (err, html) => {
+            if (err) {
+                console.error(err);
+                throw new Error(err);
+            }
+            fs.outputFileSync('./public/index.html', html)
+            opn('./public/index.html');
+        });
 
     })
 });
