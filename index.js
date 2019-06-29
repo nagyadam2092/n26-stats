@@ -3,8 +3,9 @@ const parse = require('csv-parse');
 const async = require('async');
 const ejs = require('ejs');
 const opn = require('opn');
+const path = require('path');
 
-const inputFile = 'n26-csv-transactions_toty.csv';
+const inputFile = 'n26.csv';
 
 const lines = [];
 
@@ -60,7 +61,8 @@ const parser = parse({delimiter: ','}, (err, data) => {
             }
             fs.outputFileSync('./public/index.html', html);
             opn('./public/index.html');
-            console.log('A browser tab should open with your graph. If not, please open directly public/index.html .');
+            const indexRoute = path.resolve('./public/index.html');
+            console.log(`A browser tab should open with your graph. If not, please open directly file://${indexRoute} .`);
         });
 
     })
