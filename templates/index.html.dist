@@ -16,8 +16,9 @@
     </script>
 </head>
 <body>
-
+<h2>N26 account money flow</h2>
 <div id="chart"></div>
+<pre><%= sum %></pre>
 <script>
     var chart = c3.generate({
         data: {
