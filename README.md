@@ -1,7 +1,7 @@
 # n26-stats
 
 
-Ever wondered, how much exactly you are spending each month / day? This little chart generator might useful for you! 🥳🥳🥳
+Ever wondered, how much exactly you are spending each month / day? This little chart generator might be useful for you! 🥳
 
 ## TL;DR
 A simple chart generator for N26 accounts where one can visualize the flow of one's money.
