@@ -6,7 +6,7 @@ Ever wondered, how much exactly you are spending each month / day? This little c
 ## TL;DR
 A simple chart generator for N26 accounts where one can visualize the flow of one's money.
 
-![n26-stats](https://raw.githubusercontent.com/nagyadam2092/n26-stats/master/templates/n26-stats.png)
+![n26-stats](./templates/n26-stats.png)
 
 
 ### Instructions:
